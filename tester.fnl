@@ -153,7 +153,7 @@
 (local commands
   {:test (fn [paths]
            (clear-luacov-out-files)
-           (let [paths (if (< (length arg) 1) ["test"] arg)
+           (let [paths (if (< (length paths) 1) ["test"] paths)
                  test-modules (discover-tests paths)]
              (run-tests test-modules)))
    :setup (fn []
@@ -166,8 +166,11 @@
 
 (fn run []
   (let [[command & args] arg
-        command-name (or command :test)]
-    ((. commands command-name) args)))
+        command-name (or command :test)
+        command (. commands command-name)]
+    (if command
+      (command args)
+      (print (.. "Unknown command: " command-name)))))
 
 (var _suite _G)
 
