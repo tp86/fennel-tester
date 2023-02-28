@@ -11,6 +11,7 @@ Simple unit testing framework for Fennel.
 ## Usage
 
 First, copy `tester.fnl` and `tester-macros.fnl` files to your project's root directory and make `tester.fnl` executable.
+Alternatively, you can add tester repository as submodule, e.g. `git submodule add https://github.com/tp86/fennel-tester tester`.
 
 Do not change names of these files, as some parts depend on them.
 

@@ -10,6 +10,11 @@
 (local lua-version (_VERSION:match "Lua (.*)"))
 (local separator (package.config:sub 1 1))
 
+(local current-directory (-> (debug.getinfo 1 :S)
+                             (. :source)
+                             (: :match "@(.*)")
+                             (: :match (.. "(.*)" separator))))
+
 (fn make-paths [key path-sequence]
   (icollect [_ pattern (ipairs (. file-patterns key))]
     (do
@@ -25,8 +30,10 @@
 (each [_ path (ipairs (make-paths :cpath [luarocks-tree "lib" "lua" lua-version]))]
   (prepend-path path package.cpath))
 (let [fennel (require :fennel)]
+  (prepend-path (.. current-directory separator "?-macros.fnl") fennel.macro-path)
   (each [_ path (ipairs (make-paths :macro-path []))]
      (prepend-path path fennel.macro-path))
+  (prepend-path (.. current-directory separator "?.fnl") fennel.path)
   (each [_ path (ipairs (make-paths :fnl-path []))]
      (prepend-path path fennel.path)))
 
