@@ -19,14 +19,23 @@
          tester-suite# tester#._suite
          suite# {}
          suite-name# (.. "test-suite:" current-file-basename# "::" ,(tostring id))]
-     (when (. tester-suite# suite-name#)
+     (when (. tester#._suite suite-name#)
        (error (.. "Suite " suite-name# " already defined!")))
-     (tset tester-suite# suite-name# suite#)
+     (tset tester#._suite suite-name# suite#)
      (set tester#._suite suite#)
-     ,...
-     (set tester#._suite tester-suite#)))
+     [,...]
+     (set tester#._suite tester-suite#)
+     nil))
 
+(fn before-each [...]
+  `(let [tester# (require :tester)]
+     (tset tester#._suite :setup (fn [] ,... nil))))
 
+(fn after-each [...]
+  `(let [tester# (require :tester)]
+     (tset tester#._suite :teardown (fn [] ,... nil))))
 
 {: test
- : suite}
+ : suite
+ : before-each
+ : after-each}
