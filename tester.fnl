@@ -164,8 +164,8 @@
           (generate-luacov-report includes)
           (print-file "luacov.report.out"))})
 
-(fn run []
-  (let [[command & args] arg
+(fn run [args]
+  (let [[command & args] (or args arg)
         command-name (or command :test)
         command (. commands command-name)]
     (if command
@@ -175,7 +175,8 @@
 (var _suite _G)
 
 (local api
-  {: _suite})
+  {: _suite
+   : run})
 
 (fn required? []
   (let [caller (-> (debug.getinfo 3 :f)
