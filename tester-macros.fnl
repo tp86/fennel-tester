@@ -9,21 +9,21 @@
     (table.insert f `nil)
     f))
 
-(fn test [id ...]
+(fn test [name ...]
   `(let [current-file-basename# ,(current-file-basename)
          tester# (require :tester)
          test-fn# ,(nil-returning-fn ...) ; test function needs to return nil for correct stacktrace reported by luaunit
-         test-name# (.. "test:" current-file-basename# "::" ,(tostring id))]
+         test-name# (.. "test:" current-file-basename# "::" ,name)]
      (when (. tester#._suite test-name#)
        (error (.. test-name# " already defined!")))
      (tset tester#._suite test-name# test-fn#)))
 
-(fn suite [id ...]
+(fn suite [name ...]
   (let [suite-fn `(let [current-file-basename# ,(current-file-basename)
                         tester# (require :tester)
                         tester-suite# tester#._suite
                         suite# {}
-                        suite-name# (.. "test-suite:" current-file-basename# "::" ,(tostring id))]
+                        suite-name# (.. "test-suite:" current-file-basename# "::" ,name)]
                     (when (. tester#._suite suite-name#)
                       (error (.. "Suite " suite-name# " already defined!")))
                     (tset tester#._suite suite-name# suite#)

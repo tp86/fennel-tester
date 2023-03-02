@@ -4,7 +4,7 @@
 (local file-patterns
   {:path ["?.lua" "?/init.lua"]
    :cpath ["?.so"]
-   :macro-path ["?-macros.fnl"]
+   :macro-path ["src/?-macros.fnl"]
    :fnl-path ["src/?.fnl"]})
 
 (local lua-version (_VERSION:match "Lua (.*)"))
@@ -144,6 +144,9 @@
     (lu.assertTrue obj)))"
                ".luacov" "include = {
   \"src%/.+$\",
+}
+exclude = {
+ \"src%/fennel%/macros.fnl\",
 }"
                "src/basic.fnl" "true"}]
     (each [filename contents (pairs files)]
