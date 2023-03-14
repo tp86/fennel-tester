@@ -1,3 +1,5 @@
+(local {: with-splicing} (require :splicing))
+
 (fn current-file-basename []
   `(-> (debug.getinfo 1 :S)
        (. :source)
@@ -5,9 +7,7 @@
        (: :match "^[./\\]*(.*)%.[^.]*$")))
 
 (fn nil-returning-fn [...]
-  (let [f `(fn [] ,(values ...))]
-    (table.insert f `nil)
-    f))
+  (with-splicing `(fn [] (&splice ,...) nil)))
 
 (fn test [name ...]
   `(let [current-file-basename# ,(current-file-basename)
@@ -19,19 +19,19 @@
      (tset tester#._suite test-name# test-fn#)))
 
 (fn suite [name ...]
-  (let [suite-fn `(let [current-file-basename# ,(current-file-basename)
-                        tester# (require :tester)
-                        tester-suite# tester#._suite
-                        suite# {}
-                        suite-name# (.. "test-suite:" current-file-basename# "::" ,name)]
-                    (when (. tester#._suite suite-name#)
-                      (error (.. "Suite " suite-name# " already defined!")))
-                    (tset tester#._suite suite-name# suite#)
-                    (set tester#._suite suite#)
-                    ,(values ...))]
-    (table.insert suite-fn `(set tester#._suite tester-suite#))
-    (table.insert suite-fn `nil)
-    suite-fn))
+  (with-splicing
+    `(let [current-file-basename# ,(current-file-basename)
+           tester# (require :tester)
+           tester-suite# tester#._suite
+           suite# {}
+           suite-name# (.. "test-suite:" current-file-basename# "::" ,name)]
+       (when (. tester#._suite suite-name#)
+         (error (.. "Suite " suite-name# " already defined!")))
+       (tset tester#._suite suite-name# suite#)
+       (set tester#._suite suite#)
+       (&splice ,...)
+       (set tester#._suite tester-suite#)
+       nil)))
 
 (fn make-suite-fn [name ...]
   `(let [tester# (require :tester)]
