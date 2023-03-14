@@ -1,0 +1,3 @@
+[submodule "lib/snippets"]
+	path = lib/snippets
+	url = https://github.com/tp86/fennel-snippets
