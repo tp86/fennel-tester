@@ -17,6 +17,10 @@ Make sure you have also dependency available (https://github.com/tp86/fennel-sni
 cd tester
 git submodule update --init lib/snippets
 ```
+**NOTE**
+
+Don't `git clone --recurse-submodules https://github.com/tp86/fennel-tester`! There is a circular dependency between
+`fennel-tester` and `fennel-snippets`.
 
 Do not change names of these files, as some parts depend on them.
 
